@@ -32,6 +32,11 @@ function animate(){
     renderer.render(scene, camera);
 }
 animate();
+//window resize
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    renderer.setSize( window.innerWidth, window.innerHeight );
+}
 
 </script>
 </body>
