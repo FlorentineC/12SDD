@@ -1,5 +1,17 @@
+/*font face information source https://css-tricks.com/snippets/css/using-font-face-in-css/
+and https://stackoverflow.com/questions/24990554/how-to-include-a-font-ttf-using-css*/
+@font-face {
+    font-family: 'Giaza-Stencil';
+    src:  url('/fonts/Giaza-Stencil/Giaza\ Stencil.ttf') format('truetype');
+  }
+@font-face {
+    font-family: 'Catchy-Mager';
+    src: url('/fonts/Catchy-Mager/CatchyMager-Normal.ttf') format('truetype');
+}
+
 #title {
-    position:absolute;
+    font-family: 'Giaza-Stencil';
+    position:  absolute;
     top: 50px;
     left: 40px;
 	width: 100%;
@@ -8,18 +20,44 @@
 	display:block;
     font-size:50px;
     color: white;
-    font-family: Arial, Helvetica, sans-serif;
+    /*font-family: Arial, Helvetica, sans-serif;*/
 }
 
-#subtitle {
+#description {
+    font-family: 'Catchy-Mager';
     position:absolute;
     top: 120px;
     left: 40px;
-    width: 100%;
+
+    height: 200px;
+    width: 30%;
+
     text-align: left;
     z-index: 100;
     display:block;
-    font-size:20px;
+    font-size:15px;
     color: white;
-    font-family: Arial, Helvetica, sans-serif;
+}
+
+.img {
+    position: absolute;
+    top: 30px;
+    right: 60px;
+    max-width: 20%;
+    max-height: 60%;
+    height: auto;
+} 
+
+#vid{
+    position: absolute;
+    max-width: 20%;
+    max-height: 30%;
+    top: 400px;
+    right: 60px;
+}
+
+.button1 {
+    position:absolute;
+    text-align: right;
+    right: 50px;
 }
