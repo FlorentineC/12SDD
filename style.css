@@ -18,7 +18,7 @@ div {
 }
 
 #title {
-    font-family: 'Giaza-Stencil', Tahoma;
+    font-family: 'Giaza-Stencil', Tahoma, Verdana, sans-serif;;
     position:  absolute;
     top: 50px;
     left: 40px;
