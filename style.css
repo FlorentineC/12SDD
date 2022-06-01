@@ -1,12 +1,20 @@
 /*font face information source https://css-tricks.com/snippets/css/using-font-face-in-css/
 and https://stackoverflow.com/questions/24990554/how-to-include-a-font-ttf-using-css*/
+* {
+    margin: 0;
+    padding: 0;
+}
+div {
+    overflow-y: hidden;
+}
+
 @font-face {
     font-family: 'Giaza-Stencil';
-    src:  url('/fonts/Giaza-Stencil/Giaza\ Stencil.ttf') format('truetype');
+    src:  url('./fonts/Giaza-Stencil/Giaza\ Stencil.ttf') format('truetype');
   }
 @font-face {
     font-family: 'Catchy-Mager';
-    src: url('/fonts/Catchy-Mager/CatchyMager-Normal.ttf') format('truetype');
+    src: url('./fonts/Catchy-Mager/CatchyMager-Normal.ttf') format('truetype');
 }
 
 #title {
@@ -57,7 +65,8 @@ and https://stackoverflow.com/questions/24990554/how-to-include-a-font-ttf-using
 }
 
 .button1 {
-    position:absolute;
-    text-align: right;
-    right: 50px;
+    position: relative;
+    float: right;
+    text-align: center;
+    transform: translate(0px, 40px);
 }
