@@ -5,14 +5,19 @@
 </head>
 <body>
 <!--Artwork Title and Description-->
-<button class= 'button1'>Click Me!</button>
-<p><div id="title"> </div><div id="description"> </div></p>
-<img src="./images/cafe.png" alt="alternatetext"class='img'>
+<button id ="id_button_previousartwork"class= 'button1'>Previous</button>
+<button id ="id_button_switchmode"class= 'button1'>Switch Mode</button>
+<button id ="id_button_nextartwork"class= 'button1'>Next</button>
 
+<p><div id="title"> </div><div id="description"> </div></p>
+<!--<img src="./images/cafe.png" alt="alternatetext"class='img'>-->
+
+<!-- not certain yet
 <div id="vid"><video width="320" height="240" autoplay>
     <source src="./videos/cafe_vid.mp4" type="video/mp4">
 </video>
 </div>
+-->
 
 <script async src="https://cdn.skypack.dev/three"></script>
     
@@ -29,6 +34,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js";
+import { FirstPersonControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/FirstPersonControls.js";
 import Stats from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/libs/stats.module.js";
 import { artworklist } from './artworkInformation.js';
 
@@ -50,6 +56,30 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 //ambient light
 const light = new THREE.AmbientLight( "rgb(255, 211, 180)" ); // soft white light 0x404040 for white
 scene.add( light );
+
+//BUTTONS
+var updatemode_tofirstperson = false;
+var button_switchmode = document.getElementById("id_button_switchmode")
+button_switchmode.addEventListener("click", function(){
+    updatemode();
+});
+
+var button_nextartwork = document.getElementById("id_button_nextartwork")
+button_nextartwork.addEventListener("click", function(){
+    unloadartwork();
+    incrementartworkindex(1);
+});
+
+var button_previousartwork = document.getElementById("id_button_previousartwork")
+button_previousartwork.addEventListener("click", function(){
+    unloadartwork();
+    incrementartworkindex(-1);
+});
+
+function updatemode(){
+    SetFirstPersonControlsSettings();
+    console.log("updatemode_tofirstperson");
+}
 
 //just a test from https://threejs.org/docs/#api/en/lights/SpotLight for spotlight lighting
 
@@ -81,28 +111,19 @@ renderer.gammaOutput = true;
 window.addEventListener( 'resize', onWindowResize, false );
 
 function onWindowResize(){
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
-
-
-//GEOMETRY
-//Cube test
-/*
-const geometry = new THREE.BoxGeometry(); //cube or geometry
-const material = new THREE.MeshLambertMaterial( { color: "rgb(245, 170, 66)" } ); //object material
-//defined object with geometry and material
-const cube = new THREE.Mesh( geometry, material );
-//adds geometry with material to scene
-scene.add( cube );
-//defines object position on z axis
-cube.position.z = 4;
-//position
-*/
+var jumps;
+function incrementartworkindex(jumps){
+    currentartwork+=jumps;
+    console.log("next artwork");
+    console.log(currentartwork);
+    loadartwork();
+    LoadArtworkInformation();
+}
 
 
 //LOADING ARTWORK MODELS
@@ -112,93 +133,96 @@ const loader = new GLTFLoader();
 //0-5 at current
 var currentartwork=2;
 
+//LOADING ARTWORK
+var loadedartwork;
 
-//CAMERA SETTING
-var camera_posx=artworklist[currentartwork][1];
-var camera_posy=artworklist[currentartwork][2];
-var camera_posz=artworklist[currentartwork][3];
-camera.position.set(camera_posx,camera_posy,camera_posz);
-
-//let artworkname = artworklist[currentartwork][4];
-loader.load( artworklist[currentartwork][0], function ( gltf ) {
-
-    //gltf.material.transparent = true;
-    // set opacity to 50%
-    //gltf.material.opacity = 0.5; 
-    scene.add( gltf.scene );
-    //gltf.scale.set(2, 2, 2);
-    //gltf.position.y = 0;
-
-}, undefined, function ( error ) {
-
-	console.error( error );
-
-} );
-
-//CAMERA CONTROLS
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.addEventListener('change', renderer.render);
-
-//DISPLAY ARTWORK INFORMATION
-//source: https://www.w3schools.com/js/js_htmldom_html.asp
-//artwork title
-document.getElementById("title").innerHTML = artworklist[currentartwork][4];
-//artwork description
-document.getElementById("description").innerHTML = artworklist[currentartwork][5];
-//artwork images or videos
-
-/*
-//NEXT BUTTON
-function indexfunc(artworklist){
-    console.log("indexfunc1");
-    artworkname = artworklist[1][0];
-    console.log("indexfunc2");
-    loader.load( artworkname, function ( gltf ) {
-        scene.add( gltf.scene );
+function loadartwork(){
+    loader.load( artworklist[currentartwork][0], function ( gltf ) {
+        loadedartwork = gltf.scene;
+        //gltf.material.transparent = true;
+        // set opacity to 50%
+        //gltf.material.opacity = 0.5; 
+        scene.add( loadedartwork );
         //gltf.scale.set(2, 2, 2);
         //gltf.position.y = 0;
-    }, undefined, function ( error ) {
 
-	console.error( error );
+    }, undefined, function ( error ) {
+        console.error( error );
 
     } );
 }
-*/
+loadartwork();
 
-/* attempted button stuff
-function incrementartworkindex(){
-    currentartwork++;
-    console.log(currentartwork);
-//return currentartwork;
-};
+function unloadartwork(){
+    scene.remove(loadedartwork);
+    console.log("unload");
+}
 
-window.onload= "incrementartworkindex"(){
-    //Temporary increment artworkindex
-    document.getElementById("button1").onclick= function incrementartworkindex(){
-        console.log("inc");
-    };
-};
-*/
+//CONTROLS
+var controls;
+//CAMERA CONTROLS
+function SetOrbitControlsSettings() {
+    var camera_posx=artworklist[currentartwork][1];
+    var camera_posy=artworklist[currentartwork][2];
+    var camera_posz=artworklist[currentartwork][3];
+    camera.position.set(camera_posx,camera_posy,camera_posz);
+    controls = new OrbitControls(camera, renderer.domElement);
+}
+SetOrbitControlsSettings();
+
+function SetFirstPersonControlMode(){
+    controls = new FirstPersonControls(camera, renderer.domElement);
+}
+
+function SetFirstPersonControlsSettings() {
+    var firstpov = true;
+    console.log("working?");
+    controls = new FirstPersonControls(camera, renderer.domElement);
+    controls.lookSpeed = 0.05;
+    controls.movementSpeed = 12
+    controls.noFly = true;
+    controls.lookVertical = true;
+    controls.constrainVertical = true;
+    controls.verticalMin = 1.0;
+    controls.verticalMax = 2.0;
+    controls.lon = -150;
+    controls.lat = 120;
+    camera.position.set(0,0,0);
+}
+
+//DISPLAY ARTWORK INFORMATION
+//changing HTML elements source: https://www.w3schools.com/js/js_htmldom_html.asp
+function LoadArtworkInformation()   {
+    //artwork title
+    document.getElementById("title").innerHTML = artworklist[currentartwork][4];
+    //artwork description
+    document.getElementById("description").innerHTML = artworklist[currentartwork][5];
+}
+LoadArtworkInformation();
+
 
 //STATS (temporary)
 //source: https://sbcode.net/threejs/stats-panel/
 const stats = Stats();
 document.body.appendChild(stats.dom);
+
+//clock temporary fix
+var clock = new THREE.Clock();
+
 //RENDER
 function animate(){
+    var delta = clock.getDelta();
     requestAnimationFrame(animate);
-    //cube.rotation.x += 0.01;
-    //cube.rotation.y += 0.01;
-    //gltf.rotation.y += 0.01;
+    //loadedartwork.rotation.y+=0.01;
     renderer.render(scene, camera);
+    controls.update(delta);
     stats.update();
     //CHECK CAMERA POSITION
     //console.log(camera.position);
-    //console.log(camera_posx);
+    
 }
 animate();
 
-//CAMERA TRANSITIONS
 
 </script>
 </body>
